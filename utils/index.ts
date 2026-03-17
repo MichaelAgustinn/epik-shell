@@ -7,43 +7,50 @@ import GLib from "gi://GLib?version=2.0"
 import GObject from "gi://GObject?version=2.0"
 
 export function ensureDirectory(path: string) {
-  if (!GLib.file_test(path, GLib.FileTest.EXISTS))
-    Gio.File.new_for_path(path).make_directory_with_parents(null)
+	if (!GLib.file_test(path, GLib.FileTest.EXISTS))
+		Gio.File.new_for_path(path).make_directory_with_parents(null)
 }
 
+export function ensureFile(path: string) {
+	if (!GLib.file_test(path, GLib.FileTest.EXISTS)) {
+		Gio.File.new_for_path(path).create(null, null)
+	}
+}
+
+
 export async function launchDefaultAsync(uri: string) {
-  return new Promise((resolve, reject) => {
-    Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (_, res) => {
-      try {
-        resolve(Gio.AppInfo.launch_default_for_uri_finish(res))
-      } catch (error) {
-        reject(error)
-      }
-    })
-  })
+	return new Promise((resolve, reject) => {
+		Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (_, res) => {
+			try {
+				resolve(Gio.AppInfo.launch_default_for_uri_finish(res))
+			} catch (error) {
+				reject(error)
+			}
+		})
+	})
 }
 
 export const now = () =>
-  GLib.DateTime.new_now_local().format("%Y-%m-%d_%H-%M-%S")
+	GLib.DateTime.new_now_local().format("%Y-%m-%d_%H-%M-%S")
 
 export const time = createPoll(GLib.DateTime.new_now_local(), 1000, () =>
-  GLib.DateTime.new_now_local(),
+	GLib.DateTime.new_now_local(),
 )
 
 export function range(max: number) {
-  return Array.from({ length: max + 1 }, (_, i) => i)
+	return Array.from({ length: max + 1 }, (_, i) => i)
 }
 
 export async function notifySend(notification: AstalNotifd.Notification) {
-  return new Promise((resolve, reject) => {
-    AstalNotifd.send_notification(notification, (_, res) => {
-      try {
-        resolve(AstalNotifd.send_notification_finish(res))
-      } catch (error) {
-        reject(error)
-      }
-    })
-  })
+	return new Promise((resolve, reject) => {
+		AstalNotifd.send_notification(notification, (_, res) => {
+			try {
+				resolve(AstalNotifd.send_notification_finish(res))
+			} catch (error) {
+				reject(error)
+			}
+		})
+	})
 }
 
 // type NotifUrgency = "low" | "normal" | "critical"
@@ -96,42 +103,42 @@ export async function notifySend(notification: AstalNotifd.Notification) {
 // }
 
 export async function sh(cmd: string | string[]) {
-  return execAsync(cmd).catch((err) => {
-    console.error(typeof cmd === "string" ? cmd : cmd.join(" "), err)
-    return ""
-  })
+	return execAsync(cmd).catch((err) => {
+		console.error(typeof cmd === "string" ? cmd : cmd.join(" "), err)
+		return ""
+	})
 }
 
 export async function bash(strings: string | string[], ...values: unknown[]) {
-  const cmd =
-    typeof strings === "string"
-      ? strings
-      : strings.flatMap((str, i) => str + `${values[i] ?? ""}`).join("")
+	const cmd =
+		typeof strings === "string"
+			? strings
+			: strings.flatMap((str, i) => str + `${values[i] ?? ""}`).join("")
 
-  return execAsync(["bash", "-c", cmd]).catch((err) => {
-    console.error(cmd, err)
-    return ""
-  })
+	return execAsync(["bash", "-c", cmd]).catch((err) => {
+		console.error(cmd, err)
+		return ""
+	})
 }
 
 export const gsettings = new Gio.Settings({
-  schema: "org.gnome.desktop.interface",
+	schema: "org.gnome.desktop.interface",
 })
 
 export const cacheDir = `${GLib.get_user_cache_dir()}/epik-shell`
 
 export function separatorBetween(
-  elements: GObject.Object[],
-  orientation: Gtk.Orientation,
+	elements: GObject.Object[],
+	orientation: Gtk.Orientation,
 ) {
-  const spacedElements: GObject.Object[] = []
+	const spacedElements: GObject.Object[] = []
 
-  elements.forEach((element, index) => {
-    if (index > 0) {
-      spacedElements.push(new Gtk.Separator({ orientation: orientation }))
-    }
-    spacedElements.push(element)
-  })
+	elements.forEach((element, index) => {
+		if (index > 0) {
+			spacedElements.push(new Gtk.Separator({ orientation: orientation }))
+		}
+		spacedElements.push(element)
+	})
 
-  return spacedElements
+	return spacedElements
 }
