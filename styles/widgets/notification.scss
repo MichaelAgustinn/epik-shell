@@ -1,9 +1,10 @@
+@use "sass:list";
 @use "sass:color";
 @use "sass:math";
 @use "../variables" as *;
 
 .notifications-container {
-  min-width: 400px;
+  // min-width: 400px;
   min-height: 420px;
   separator {
     margin: $window-padding;
@@ -63,7 +64,6 @@
 
 .notification-container {
   padding: $window-padding;
-  min-width: 330px;
 
   &.critical {
     box-shadow: 0 0 0 0.1rem $red;
@@ -77,7 +77,7 @@
     button {
       padding: 0 0.3rem;
       background-color: color.adjust($fg, $alpha: -0.9);
-      border-radius: calc(nth($window-border-radius, 1) / 2);
+      border-radius: calc(list.nth($window-border-radius, 1) / 2);
     }
   }
 
@@ -96,7 +96,7 @@
     }
 
     .image image {
-      border-radius: calc(nth($window-border-radius, 1) / 1.5);
+      border-radius: calc(list.nth($window-border-radius, 1) / 1.5);
       min-width: 60px;
       min-height: 60px;
       background-size: cover;
@@ -109,7 +109,7 @@
     button {
       padding: 0.1rem 0;
       background-color: color.adjust($fg, $alpha: -0.9);
-      border-radius: calc(nth($window-border-radius, 1) / 2);
+      border-radius: calc(list.nth($window-border-radius, 1) / 2);
     }
   }
 }

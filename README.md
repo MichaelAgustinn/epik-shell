@@ -8,6 +8,7 @@ A desktop shell based on [AGS](https://github.com/Aylur/ags/).
 ![2025-01-30_02-36-54](https://github.com/user-attachments/assets/1fa2dc55-41f8-46d6-bfac-afef2e83c32c)
 ![2026-01-30_22-07-01](https://github.com/user-attachments/assets/9cf68018-11f6-4ae9-9396-6df654758d8a)
 ![2025-01-30_02-37-16](https://github.com/user-attachments/assets/d9702b1a-2816-48a5-a9f0-00b7999447dd)
+
 ---
 
 ## Notes
@@ -27,6 +28,7 @@ A desktop shell based on [AGS](https://github.com/Aylur/ags/).
 
 ### Optional
 
+- `awww`
 - `hyprpicker`
 - `swappy`
 - `wf-recorder`
@@ -36,7 +38,7 @@ A desktop shell based on [AGS](https://github.com/Aylur/ags/).
 - `brightnessctl`
 
 ```bash
-paru -S aylurs-gtk-shell-git libastal-git libastal-4-git libastal-hyprland-git libastal-battery-git libastal-bluetooth-git libastal-io-git libastal-mpris-git libastal-network-git libastal-notifd-git libastal-powerprofiles-git libastal-wireplumber-git dart-sass hyprpicker swappy wf-recorder wayshot slurp wl-clipboard brightnessctl
+paru -S aylurs-gtk-shell-git libastal-git libastal-4-git libastal-hyprland-git libastal-battery-git libastal-bluetooth-git libastal-io-git libastal-mpris-git libastal-network-git libastal-notifd-git libastal-powerprofiles-git libastal-wireplumber-git dart-sass hyprpicker swappy wf-recorder wayshot slurp wl-clipboard brightnessctl awww-bin
 ```
 
 ---
@@ -55,14 +57,16 @@ paru -S aylurs-gtk-shell-git libastal-git libastal-4-git libastal-hyprland-git l
    ```bash
    ags run -d .
    ```
-   
+
 ---
 
 ## Configuration
+
 Epik Shell looks for a configuration file in the config directory (`~/.config/epik-shell/config.json`).
 Configuration comes with the following defaults:
 
 You can check some configurations in the [wiki](https://github.com/ezerinz/epik-shell/wiki/Configuration-Recipes)
+
 > [!WARNING]
 > Don't copy and paste this entire block into your `config.json`, it's just to show which configurations are available.
 
@@ -156,7 +160,7 @@ You can check some configurations in the [wiki](https://github.com/ezerinz/epik-
 ### Making GTK Apps Match Astal Theme
 
 1. Install `libadwaita-without-adwaita`.
-2. This configuration generates a `colors.css` file in `$HOME/.themes` based on theme settings in `src/theme.json`. Import the `colors.css` file into the `adw-gtk3` theme to apply it to your GTK apps.
+2. Epik Shell generates a `colors.css` file in `$HOME/.themes` based on theme settings in configuration file. Import the `colors.css` file into the `adw-gtk3` theme to apply it to your GTK apps.
 
 Locate the following files:
 

@@ -4,6 +4,7 @@ import Notification from "./Notification"
 import options from "../../options"
 import { Gtk } from "ags/gtk4"
 import { createBinding, createComputed, For, With } from "ags"
+import Adw from "gi://Adw?version=1"
 
 export const WINDOW_NAME = "notifications"
 const notifd = AstalNotifd.get_default()
@@ -12,11 +13,9 @@ const { bar } = options
 
 function NotifsScrolledWindow() {
   return (
-    <Gtk.ScrolledWindow vexpand>
+    <Gtk.ScrolledWindow vexpand hscrollbarPolicy={Gtk.PolicyType.NEVER}>
       <box orientation={Gtk.Orientation.VERTICAL} hexpand={false} spacing={8}>
-        <For each={notifications}>
-          {(e) => <Notification n={e} showActions={false} />}
-        </For>
+        <For each={notifications}>{(e) => <Notification n={e} />}</For>
         <box
           halign={Gtk.Align.CENTER}
           valign={Gtk.Align.CENTER}
@@ -72,23 +71,27 @@ export default function NotificationWindow() {
   const layout = createComputed(() => {
     return `${bar.position()}_center`
   })
+  const width = options.theme.window.padding((val) => (val + 15) * 2 + 400)
   return (
     <With value={layout}>
       {(l) => (
         <PopupWindow name={WINDOW_NAME} layout={l}>
-          <box
-            cssClasses={["window-content", "notifications-container"]}
-            orientation={Gtk.Orientation.VERTICAL}
-            vexpand={false}
-          >
-            <box cssClasses={["window-header"]}>
-              <label label={"Notifications"} hexpand xalign={0} />
-              <DNDButton />
-              <ClearButton />
+          <Adw.Clamp maximumSize={width()}>
+            <box
+              cssClasses={["window-content", "notifications-container"]}
+              orientation={Gtk.Orientation.VERTICAL}
+              vexpand={false}
+              widthRequest={width()}
+            >
+              <box cssClasses={["window-header"]}>
+                <label label={"Notifications"} hexpand xalign={0} />
+                <DNDButton />
+                <ClearButton />
+              </box>
+              <Gtk.Separator />
+              <NotifsScrolledWindow />
             </box>
-            <Gtk.Separator />
-            <NotifsScrolledWindow />
-          </box>
+          </Adw.Clamp>
         </PopupWindow>
       )}
     </With>

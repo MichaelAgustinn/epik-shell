@@ -30,6 +30,8 @@ import { WINDOW_NAME as POWERMENU_WINDOW } from "../powermenu/PowerMenu"
 import Pango from "gi://Pango?version=1.0"
 import Adw from "gi://Adw?version=1"
 import { toggleWallpaperPicker } from "../WallpaperPicker"
+import BluetoothPage from "./pages/BluetoothPage"
+import { timeout } from "ags/time"
 
 export const WINDOW_NAME = "quicksettings"
 export const [qsPage, setQsPage] = createState("main")
@@ -209,7 +211,20 @@ function WifiBluetooth() {
               title="Bluetooth"
               subtitle={label}
               onClicked={() => bluetooth.toggle()}
-              onArrowClicked={() => console.log("Will add bt page later")}
+              onArrowClicked={() => {
+                try {
+                  if (!bluetooth.is_powered) {
+                    bluetooth.toggle()
+                  }
+                  bluetooth.adapter.start_discovery()
+                  timeout(15000, () => {
+                    bluetooth.adapter.stop_discovery()
+                  })
+                } catch (error) {
+                  // pass?
+                }
+                setQsPage("bluetooth")
+              }}
               connection={[btAdapter, "powered"]}
             />
           )}
@@ -265,6 +280,7 @@ export default function QSWindow() {
                     BatteryPage(),
                     SpeakerPage(),
                     WifiPage(),
+                    BluetoothPage(),
                   ]
 
                   children.forEach((c: Gtk.Widget) => {

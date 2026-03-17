@@ -12,11 +12,11 @@ export default function requestHandler(
       break
     case "screenshot":
       res("ok")
-      screenRecord.screenshot(true)
+      screenRecord.screenshot(true).catch(console.error)
       break
     case "screenshot-select":
       res("ok")
-      screenRecord.screenshot()
+      screenRecord.screenshot().catch(console.error)
       break
     default:
       res("not ok")

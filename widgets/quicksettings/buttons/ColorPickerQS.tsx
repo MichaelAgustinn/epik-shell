@@ -4,6 +4,7 @@ import QSButton from "../QSButton"
 import { execAsync } from "ags/process"
 import app from "ags/gtk4/app"
 import { timeout } from "ags/time"
+import AstalNotifd from "gi://AstalNotifd?version=0.1"
 
 export default function ColorPickerQS() {
   return (
@@ -19,11 +20,12 @@ export default function ColorPickerQS() {
               if (!color) return
 
               wlCopy(color)
-              notifySend({
+              const notif = new AstalNotifd.Notification({
                 appName: "Hyprpicker",
-                summary: "Color Picker",
+                summary: "Color picker",
                 body: `${color} copied to clipboard`,
               })
+              notifySend(notif)
             })
             .catch(console.error)
         })

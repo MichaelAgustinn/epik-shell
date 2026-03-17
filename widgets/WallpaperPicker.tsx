@@ -8,6 +8,7 @@ import { Gtk } from "ags/gtk4"
 import app from "ags/gtk4/app"
 import { Accessor, createRoot } from "ags"
 import { timeout } from "ags/time"
+import { sendBatch } from "../utils/hyprland"
 const { wallpaper } = options
 const cachePath = `${GLib.get_user_cache_dir()}/epik-shell/wallpapers`
 const imageFormats = [".jpeg", ".jpg", ".webp", ".png"]
@@ -204,7 +205,7 @@ function WallpaperPicker() {
                       })
                       button.connect("clicked", () => {
                         sh([
-                          "swww",
+                          "awww",
                           "img",
                           "--transition-type",
                           "random",
@@ -237,7 +238,7 @@ function WallpaperPicker() {
               }}
             >
               <label
-                label={"Caching wallpapers..."}
+                label={"Loading wallpapers..."}
                 hexpand
                 halign={Gtk.Align.CENTER}
               />
@@ -256,6 +257,9 @@ export function toggleWallpaperPicker() {
     .some(({ name }) => name == "wallpaperpicker")
   if (!windowExist) {
     WallpaperPicker()
+    sendBatch([
+      `layerrule animation slide ${options.bar.position.peek()}, match:namespace wallpaperpicker`,
+    ])
   } else {
     const window = app.get_window("wallpaperpicker")
     window!.hide()

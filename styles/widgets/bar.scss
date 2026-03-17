@@ -1,9 +1,12 @@
+@use "sass:list";
+@use "../common";
+
 @use "sass:color";
 @use "sass:math";
 @use "../variables.scss" as *;
 
-$shadow-h: nth($bar-button-shadow-offset, 1);
-$shadow-v: nth($bar-button-shadow-offset, 2);
+common.$shadow-h: list.nth($bar-button-shadow-offset, 1);
+common.$shadow-v: list.nth($bar-button-shadow-offset, 2);
 
 .bar-container {
   background-color: color.adjust($bar-bg-color, $alpha: calc($bar-opacity - 1));
@@ -16,7 +19,7 @@ $shadow-v: nth($bar-button-shadow-offset, 2);
       color.adjust($bar-shadow-color, $alpha: calc($bar-shadow-opacity - 1));
 
   separator {
-    min-width: if($bar-separator, 2px, 0);
+    min-width: if(sass($bar-separator): 2px; else: 0);
   }
 
   .workspace-container {
@@ -34,18 +37,18 @@ $shadow-v: nth($bar-button-shadow-offset, 2);
         );
 
     color: $bar-button-fg-color;
-    border-radius: calc(nth($bar-button-border-radius, 1) / 2);
+    border-radius: calc(list.nth($bar-button-border-radius, 1) / 2);
     padding: $bar-button-padding;
-    margin-right: if($shadow-h > 0, $shadow-h, 0);
-    margin-left: if($shadow-h <= 0, $shadow-h, 0);
-    margin-bottom: if($shadow-v > 0, $shadow-v, 0);
-    margin-top: if($shadow-v <= 0, $shadow-v, 0);
+    margin-right: if(sass(common.$shadow-h > 0): common.$shadow-h; else: 0);
+    margin-left: if(sass(common.$shadow-h <= 0): common.$shadow-h; else: 0);
+    margin-bottom: if(sass(common.$shadow-v > 0): common.$shadow-v; else: 0);
+    margin-top: if(sass(common.$shadow-v <= 0): common.$shadow-v; else: 0);
 
     .workspace-button {
       background-color: color.adjust($bar-button-fg-color, $alpha: -0.55);
       min-height: 0.65em;
       min-width: 0.65rem;
-      border-radius: calc(nth($bar-button-border-radius, 1) * 1.5);
+      border-radius: calc(list.nth($bar-button-border-radius, 1) * 1.5);
 
       transition: min-width 0.25s ease-out;
 

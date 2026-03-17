@@ -72,7 +72,11 @@ export default function Notification({
           <box cssClasses={["content"]} spacing={10}>
             {n.image && fileExists(n.image) && (
               <box valign={Gtk.Align.START} cssClasses={["image"]}>
-                <image file={n.image} overflow={Gtk.Overflow.HIDDEN} />
+                <image
+                  file={n.image}
+                  overflow={Gtk.Overflow.HIDDEN}
+                  pixelSize={60}
+                />
               </box>
             )}
             {n.image && isIcon(n.image) && (

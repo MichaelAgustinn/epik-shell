@@ -1,3 +1,4 @@
+@use "sass:list";
 @use "sass:color";
 @use "sass:math";
 @use "variables" as *;
@@ -12,12 +13,12 @@ scale {
   margin: 0;
   padding: 0;
   trough {
-    border-radius: calc(nth($window-border-radius, 1) * 99);
+    border-radius: calc(list.nth($window-border-radius, 1) * 99);
     highlight {
       background-color: $accent;
       min-height: 25px;
       // min-width: 25px;
-      border-radius: calc(nth($window-border-radius, 1) * 99);
+      border-radius: calc(list.nth($window-border-radius, 1) * 99);
     }
     slider {
       box-shadow: none;
@@ -32,7 +33,7 @@ menubutton {
   button {
     padding: unset;
     margin: unset;
-    border-radius: calc(nth($window-border-radius, 1) / 2);
+    border-radius: calc(list.nth($window-border-radius, 1) / 2);
 
     &:hover {
       background-color: color.adjust($fg, $alpha: -0.85);
@@ -43,7 +44,7 @@ menubutton {
 button {
   padding: unset;
   margin: unset;
-  border-radius: calc(nth($window-border-radius, 1) / 2);
+  border-radius: calc(list.nth($window-border-radius, 1) / 2);
   background-color: transparent;
   transition: transform 0.2s ease-in-out;
 
@@ -68,7 +69,7 @@ window {
 separator {
   min-height: 2px;
   margin: 0.3rem 0.5rem;
-  border-radius: calc(nth($window-border-radius, 1) * 99);
+  border-radius: calc(list.nth($window-border-radius, 1) * 99);
 
   &.vertical {
     min-height: unset;
@@ -81,8 +82,8 @@ separator {
   font-size: 1.1rem;
 }
 
-$shadow-h: nth($bar-button-shadow-offset, 1);
-$shadow-v: nth($bar-button-shadow-offset, 2);
+$shadow-h: list.nth($bar-button-shadow-offset, 1);
+$shadow-v: list.nth($bar-button-shadow-offset, 2);
 .panel-button {
   background-color: color.adjust(
     $bar-button-bg-color,
@@ -96,12 +97,12 @@ $shadow-v: nth($bar-button-shadow-offset, 2);
         $alpha: calc($bar-button-shadow-opacity - 1)
       );
   color: $bar-button-fg-color;
-  border-radius: calc(nth($bar-button-border-radius, 1) / 2);
+  border-radius: calc(list.nth($bar-button-border-radius, 1) / 2);
   padding: $bar-button-padding;
-  margin-right: if($shadow-h > 0, $shadow-h, 0);
-  margin-left: if($shadow-h <= 0, $shadow-h, 0);
-  margin-bottom: if($shadow-v > 0, $shadow-v, 0);
-  margin-top: if($shadow-v <= 0, $shadow-v, 0);
+  margin-right: if(sass($shadow-h > 0): $shadow-h; else: 0);
+  margin-left: if(sass($shadow-h <= 0): $shadow-h; else: 0);
+  margin-bottom: if(sass($shadow-v > 0): $shadow-v; else: 0);
+  margin-top: if(sass($shadow-v <= 0): $shadow-v; else: 0);
 
   transition:
     background-color 0.2s ease-in-out,
@@ -116,9 +117,8 @@ $shadow-v: nth($bar-button-shadow-offset, 2);
 
   &:hover {
     background-color: if(
-      $bar-opacity < 1,
-      $bar-button-bg-color,
-      color.adjust($bar-button-fg-color, $alpha: -0.9)
+      sass($bar-opacity < 1): $bar-button-bg-color;
+      else: color.adjust($bar-button-fg-color, $alpha: -0.9)
     );
   }
 

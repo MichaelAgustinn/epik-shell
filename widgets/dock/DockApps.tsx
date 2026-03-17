@@ -6,7 +6,7 @@ import options from "../../options"
 import { Gtk } from "ags/gtk4"
 import gtk4app from "ags/gtk4/app"
 import { createBinding, createComputed, For, With } from "ags"
-import { exec } from "ags/process"
+import { execAsync } from "ags/process"
 
 const hyprland = AstalHyprland.get_default()
 const application = new AstalApps.Apps()
@@ -217,7 +217,7 @@ export default function DockApps() {
       <Gtk.Separator orientation={Gtk.Orientation.VERTICAL} />
       <AppButton
         app={{ iconName: "user-trash" } as AstalApps.Application}
-        onClicked={() => exec("nautilus trash:///")}
+        onClicked={() => execAsync("nautilus trash:///").catch(console.error)}
         term={""}
       />
     </box>

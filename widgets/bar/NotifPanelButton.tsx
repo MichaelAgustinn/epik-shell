@@ -2,8 +2,9 @@ import AstalNotifd from "gi://AstalNotifd"
 import PanelButton from "../common/PanelButton"
 import AstalApps from "gi://AstalApps"
 import { WINDOW_NAME } from "../notification/NotificationWindow"
-import { Accessor, createBinding, createConnection, For, With } from "ags"
+import { Accessor, createBinding, createConnection, With } from "ags"
 import app from "ags/gtk4/app"
+import { Gtk } from "ags/gtk4"
 
 const notifd = AstalNotifd.get_default()
 const dndBind = createBinding(notifd, "dontDisturb")
@@ -51,28 +52,24 @@ export default function NotifPanelButton() {
           notifs.length == 0 ? (
             <NotifIcon />
           ) : (
-            <box spacing={6}>
-              <For
-                each={notifications((n) => (n.length > 3 ? n.slice(0, 3) : n))}
-              >
-                {(n: AstalNotifd.Notification) => {
-                  const getFallback = (appName: string) => {
-                    const getApp = apps.fuzzy_query(appName)
-                    if (getApp.length != 0) {
-                      return getApp[0].get_icon_name()
-                    }
-                    return "unknown"
+            <box spacing={6} halign={Gtk.Align.CENTER}>
+              {(notifs.length > 3 ? notifs.slice(0, 3) : notifs).map((n) => {
+                const getFallback = (appName: string) => {
+                  const getApp = apps.fuzzy_query(appName)
+                  if (getApp.length != 0) {
+                    return getApp[0].get_icon_name()
                   }
-                  const fallback =
-                    n.app_icon.trim() === ""
-                      ? getFallback(n.app_name)
-                      : n.app_icon
-                  const icon = substitute[n.app_name] ?? fallback
-                  return <image iconName={icon} />
-                }}
-              </For>
+                  return "unknown"
+                }
+                const fallback =
+                  n.app_icon.trim() === ""
+                    ? getFallback(n.app_name)
+                    : n.app_icon
+                const icon = substitute[n.app_name] ?? fallback
+                return <image iconName={icon} />
+              })}
               <label
-                visible={notifications((n) => n.length > 3)}
+                visible={notifs.length > 3}
                 cssClasses={["circle"]}
                 label={""}
               />

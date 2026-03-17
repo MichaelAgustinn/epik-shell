@@ -4,7 +4,7 @@ import app from "ags/gtk4/app"
 import initHyprland from "./utils/hyprland"
 import requestHandler from "./request"
 
-initStyles()
+await initStyles()
 
 app.start({
   requestHandler(req, res) {

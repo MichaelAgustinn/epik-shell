@@ -20,8 +20,11 @@ const animationConfig: Record<string, string> = {
   "datemenu-window": "slide top",
   quicksettings: "slide top",
   notifications: "slide top",
+  "notification-popup": "slide top",
   powermenu: "popin 90%",
   verification: "popin 90%",
+  wallpaperpicker: "slide top",
+  applauncher: "popin 75%",
 }
 
 const windowsAnimation = () =>
@@ -53,19 +56,22 @@ export function windowAnimation() {
 
 function windowBlur() {
   const noIgnorealpha = ["verification", "powermenu"]
-
-  sendBatch(
-    app
-      .get_windows()
-      .flatMap(({ namespace }: JSX.IntrinsicElements["window"]) => {
-        return [
-          `layerrule blur on, match:namespace ${namespace}`,
-          noIgnorealpha.some((skip) => (namespace as string).includes(skip))
-            ? ""
-            : `layerrule ignore_alpha 0.3, match:namespace ${namespace}`,
-        ]
-      }),
+  const cmd = app
+    .get_windows()
+    .flatMap(({ namespace }: JSX.IntrinsicElements["window"]) => {
+      return [
+        `layerrule blur on, match:namespace ${namespace}`,
+        noIgnorealpha.some((skip) => (namespace as string).includes(skip))
+          ? ""
+          : `layerrule ignore_alpha 0.3, match:namespace ${namespace}`,
+      ]
+    })
+  cmd.push(
+    "layerrule blur on, match:namespace wallpaperpicker",
+    "layerrule ignore_alpha 0.3, match:namespace wallpaperpicker",
   )
+
+  sendBatch(cmd)
 }
 
 export default function initHyprland() {

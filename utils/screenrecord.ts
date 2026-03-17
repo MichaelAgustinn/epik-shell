@@ -3,6 +3,7 @@ import { bash, ensureDirectory, notifySend, now, sh } from "."
 import { getter, register } from "ags/gobject"
 import GObject from "gi://GObject?version=2.0"
 import { interval, Timer } from "ags/time"
+import AstalNotifd from "gi://AstalNotifd?version=0.1"
 
 const HOME = GLib.get_home_dir()
 
@@ -59,16 +60,31 @@ export default class ScreenRecord extends GObject.Object {
     this.notify("recording")
     this.#interval?.cancel()
 
-    notifySend({
-      icon: "folder-videos-symbolic",
+    const notif = new AstalNotifd.Notification({
+      appIcon: "folder-videos-symbolic",
       appName: "Screen Recorder",
       summary: "Screen recording saved",
       body: `Available in ${this.#recordings}`,
-      actions: {
-        "Show in Files": () => sh(`xdg-open ${this.#recordings}`),
-        View: () => sh(`xdg-open ${this.#file}`),
-      },
     })
+    const actions = [
+      {
+        label: "Show in Files",
+        action: () => sh(`xdg-open ${this.#recordings}`),
+      },
+      {
+        label: "View",
+        action: () => sh(`xdg-open ${this.#file}`),
+      },
+    ]
+    actions.forEach((action, index) => {
+      const notifdAction = new AstalNotifd.Action({
+        id: index.toString(),
+        label: action.label,
+      })
+      notifdAction.connect("invoked", action.action)
+      notif.add_action(notifdAction)
+    })
+    await notifySend(notif).catch(console.error)
   }
 
   async screenshot(full = false) {
@@ -86,16 +102,34 @@ export default class ScreenRecord extends GObject.Object {
 
     bash(`wl-copy < ${file}`)
 
-    notifySend({
+    const notif = new AstalNotifd.Notification({
       image: file,
       appName: "Screenshot",
       summary: "Screenshot saved",
       body: `Available in ${this.#screenshots}`,
-      actions: {
-        "Show in Files": () => sh(`xdg-open ${this.#screenshots}`),
-        View: () => sh(`xdg-open ${file}`),
-        Edit: () => sh(`swappy -f ${file}`),
-      },
     })
+    const actions = [
+      {
+        label: "Show in Files",
+        action: () => sh(`xdg-open ${this.#screenshots}`),
+      },
+      {
+        label: "View",
+        action: () => sh(`xdg-open ${file}`),
+      },
+      {
+        label: "Edit",
+        action: () => sh(`swappy -f ${file}`),
+      },
+    ]
+    actions.forEach((action, index) => {
+      const notifdAction = new AstalNotifd.Action({
+        id: index.toString(),
+        label: action.label,
+      })
+      notifdAction.connect("invoked", action.action)
+      notif.add_action(notifdAction)
+    })
+    await notifySend(notif).catch(console.error)
   }
 }

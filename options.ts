@@ -9,7 +9,7 @@ const options = mkOptions(
     wallpaper: {
       folder: opt(GLib.get_home_dir(), { cached: true }),
       current: opt(
-        await execAsync("swww query")
+        await execAsync("awww query")
           .then((out) => out.split("image:")[1].trim())
           .catch(() => ""),
         { cached: true },

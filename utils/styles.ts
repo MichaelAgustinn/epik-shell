@@ -5,6 +5,7 @@ import GLib from "gi://GLib?version=2.0"
 import { writeFileAsync } from "ags/file"
 import app from "ags/gtk4/app"
 import AstalHyprland from "gi://AstalHyprland?version=0.1"
+import { Gdk } from "ags/gtk4"
 
 const { theme } = options
 const { window, bar } = theme
@@ -15,6 +16,18 @@ type ShorthandProperty = {
   right: number
   bottom?: number
   left?: number
+}
+
+function cssColorToHex(color: string) {
+  const rgba = new Gdk.RGBA()
+
+  if (!rgba.parse(color)) return "rgb(000000)"
+
+  const r = Math.round(rgba.red * 255)
+  const g = Math.round(rgba.green * 255)
+  const b = Math.round(rgba.blue * 255)
+
+  return `${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`
 }
 
 async function initGtk(mode: ThemeMode, reset = false) {
@@ -110,7 +123,14 @@ function defineVar(opt: Opt, type = "string", slice = 2, arrayLength = 4) {
         const barPos = options.bar.position.peek()
         short.bottom = barPos == "top" ? 0 : short.bottom
         short.top = barPos == "bottom" ? 0 : short.top
+        const oldVal = { ...short }
         short = applyOffsets(short, bar)
+        if (oldVal.bottom == 0 && barPos == "bottom") {
+          short.bottom = 0
+        }
+        if (oldVal.top == 0 && barPos == "top") {
+          short.top = 0
+        }
       }
       modifiedVal = Object.keys(short)
         .map((key) => `${short[key]}px`)
@@ -193,12 +213,31 @@ export async function initHyprlandTheme(mode: ThemeMode) {
     2,
   )
 
+  function alphaToHex(a: number) {
+    return Math.round(a * 255)
+      .toString(16)
+      .padStart(2, "0")
+  }
+
+  const shadowColor = (color: string) => {
+    const shadowOpacity = alphaToHex(window.shadow.opacity.peek())
+    if (color.startsWith("#")) {
+      return `rgba(${color.replace("#", "")}${shadowOpacity})`
+    } else if (color.startsWith("$")) {
+      const key = color.replace("$", "") as "bg" | "fg" | "accent" | "red"
+      const getColor = theme[mode][key]
+      return `rgba(${getColor.peek().replace("#", "")}${shadowOpacity})`
+    } else {
+      return `rgba(${cssColorToHex(color)}${shadowOpacity})`
+    }
+  }
+
   const config = [
     generateConfig("general:border_size", window.border_width.peek() - 1),
     generateConfig(
       "general:gaps_out",
       Object.keys(margin)
-        .map((key) => margin[key] - 2)
+        .map((key) => (margin[key] - 2 < 0 ? 0 : margin[key] - 2))
         .join(","),
     ),
     generateConfig("general:col.active_border", fgColor),
@@ -206,10 +245,14 @@ export async function initHyprlandTheme(mode: ThemeMode) {
     generateConfig(
       "decoration:shadow:offset",
       Object.keys(shadowOffset)
-        .map((key) => shadowOffset[key] - 2)
+        .map((key) => (shadowOffset[key] - 2 < 0 ? 0 : shadowOffset[key] - 2))
         .join(", "),
     ),
-    generateConfig("decoration:shadow:color", fgColor),
+    generateConfig(
+      "decoration:shadow:color",
+      shadowColor(window.shadow.color.peek()),
+    ),
+    generateConfig("decoration:shadow:range", window.shadow.blur.peek()),
   ]
 
   const hl = AstalHyprland.get_default()
