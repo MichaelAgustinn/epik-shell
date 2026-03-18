@@ -26,7 +26,7 @@ function AppButton({
 	client,
 }: AppButtonProps) {
 	const substitute: Record<string, any> = {
-		Alacritty: "terminal",
+		Alacritty: "terminal-symbolic",
 		localsend: "send-to",
 		"spotify-client": "org.gnome.Lollypop-spotify",
 		"org.gnome.Nautilus": "system-file-manager",
