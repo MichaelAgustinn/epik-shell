@@ -14,7 +14,6 @@ const cachePath = `${GLib.get_user_cache_dir()}/epik-shell/wallpapers`
 const imageFormats = [".jpeg", ".jpg", ".webp", ".png"]
 
 function getWallpaperList(path: string) {
-	print(path)
 	const dir = Gio.file_new_for_path(path)
 	const fileEnum = dir.enumerate_children(
 		"standard::name",
