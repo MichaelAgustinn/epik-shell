@@ -5,23 +5,23 @@ import { WINDOW_NAME } from "../QSWindow"
 import { timeout } from "ags/time"
 
 export default function RecordQS() {
-  const screenRecord = ScreenRecord.get_default()
+	const screenRecord = ScreenRecord.get_default()
 
-  return (
-    <QSButton
-      connection={[screenRecord, "recording"]}
-      onClicked={() => {
-        if (screenRecord.recording) {
-          screenRecord.stop()
-        } else {
-          app.toggle_window(WINDOW_NAME)
-          timeout(200, () => {
-            screenRecord.start()
-          })
-        }
-      }}
-      iconName={"screencast-recorded-symbolic"}
-      label={"Screen Record"}
-    />
-  )
+	return (
+		<QSButton
+			connection={[screenRecord, "recording"]}
+			onClicked={() => {
+				if (screenRecord.recording) {
+					screenRecord.stop()
+				} else {
+					app.toggle_window(WINDOW_NAME)
+					timeout(200, () => {
+						screenRecord.start()
+					})
+				}
+			}}
+			iconName={"record-screen-symbolic"}
+			label={"Screen Record"}
+		/>
+	)
 }
