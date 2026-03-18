@@ -1,4 +1,5 @@
 @use "../variables" as *;
+@use "sass:list";
 @use "sass:math";
 @use "sass:color";
 
@@ -9,6 +10,17 @@
     padding: $window-desktop-clock-padding;
     > * {
       margin: 0 0.7rem;
+    }
+  }
+
+  .notation-box {
+    margin-left: 8px;
+    padding: calc(list.nth($window-padding, 1) / 2);
+
+    label {
+      font-size: 1.35rem;
+      font-family: "Google Sans Display";
+      font-weight: 700;
     }
   }
 
