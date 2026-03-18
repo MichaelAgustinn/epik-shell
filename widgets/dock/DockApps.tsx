@@ -7,6 +7,8 @@ import { Gtk } from "ags/gtk4"
 import gtk4app from "ags/gtk4/app"
 import { createBinding, createComputed, For, With } from "ags"
 import { execAsync } from "ags/process"
+import Gio from "gi://Gio?version=2.0"
+import Adw from "gi://Adw?version=1"
 
 const hyprland = AstalHyprland.get_default()
 const application = new AstalApps.Apps()
@@ -163,47 +165,59 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
 			: "media-playback-start-symbolic",
 	)
 
+	const playerIcon = createBinding(player, 'entry').as(e => `${e}-symbolic`)
+
 	return (
-		<box cssClasses={["media-player"]} hexpand>
+		<overlay>
+			<box cssClasses={["media-player"]} hexpand spacing={4}>
+				<Adw.Clamp maximumSize={40}>
+					<Gtk.Picture
+						file={coverArt((path) => Gio.file_new_for_path(path))}
+						contentFit={Gtk.ContentFit.COVER}
+						overflow={Gtk.Overflow.HIDDEN}
+						class='cover'
+					/>
+				</Adw.Clamp>
+				<box orientation={Gtk.Orientation.VERTICAL} hexpand>
+					<label
+						ellipsize={Pango.EllipsizeMode.END}
+						halign={Gtk.Align.START}
+						label={title}
+						maxWidthChars={15}
+					/>
+					<label
+						ellipsize={Pango.EllipsizeMode.END}
+						halign={Gtk.Align.START}
+						label={artist}
+						maxWidthChars={15}
+					/>
+				</box>
+				<box spacing={6}>
+					<button
+						halign={Gtk.Align.END}
+						valign={Gtk.Align.CENTER}
+						onClicked={() => player.play_pause()}
+						visible={createBinding(player, "canControl")}
+					>
+						<image iconName={playIcon} pixelSize={18} />
+					</button>
+					<button
+						halign={Gtk.Align.END}
+						valign={Gtk.Align.CENTER}
+						onClicked={() => player.next()}
+						visible={createBinding(player, "canGoNext")}
+					>
+						<image iconName="media-skip-forward-symbolic" pixelSize={24} />
+					</button>
+				</box>
+			</box>
 			<image
-				overflow={Gtk.Overflow.HIDDEN}
-				pixelSize={35}
-				cssClasses={["cover"]}
-				file={coverArt}
+				$type="overlay"
+				valign={Gtk.Align.END} halign={Gtk.Align.START}
+				margin_bottom={3} margin_start={36}
+				iconName={playerIcon}
 			/>
-			<box orientation={Gtk.Orientation.VERTICAL} hexpand>
-				<label
-					ellipsize={Pango.EllipsizeMode.END}
-					halign={Gtk.Align.START}
-					label={title}
-					maxWidthChars={15}
-				/>
-				<label
-					ellipsize={Pango.EllipsizeMode.END}
-					halign={Gtk.Align.START}
-					label={artist}
-					maxWidthChars={15}
-				/>
-			</box>
-			<box spacing={6}>
-				<button
-					halign={Gtk.Align.END}
-					valign={Gtk.Align.CENTER}
-					onClicked={() => player.play_pause()}
-					visible={createBinding(player, "canControl")}
-				>
-					<image iconName={playIcon} pixelSize={18} />
-				</button>
-				<button
-					halign={Gtk.Align.END}
-					valign={Gtk.Align.CENTER}
-					onClicked={() => player.next()}
-					visible={createBinding(player, "canGoNext")}
-				>
-					<image iconName="media-skip-forward-symbolic" pixelSize={24} />
-				</button>
-			</box>
-		</box>
+		</overlay>
 	)
 }
 

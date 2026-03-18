@@ -1,5 +1,7 @@
 @use "../variables.scss" as *;
 @use "sass:color";
+@use "sass:math";
+@use "sass:list";
 
 .dock-padding {
   padding: 0;
@@ -11,12 +13,12 @@
   .media-player {
     min-width: 180px;
     background-color: color.adjust($fg, $alpha: -0.75);
-    padding: 0.5rem;
+    padding: 0.35rem;
     margin-left: 0.5rem;
     border-radius: $window-border-radius;
 
     .cover {
-      border-radius: $window-border-radius;
+      border-radius: calc(list.nth($window-border-radius, 1) / 2);
       margin-right: 0.3rem;
     }
   }
