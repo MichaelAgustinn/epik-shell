@@ -5,7 +5,7 @@ A desktop shell based on [AGS](https://github.com/Aylur/ags/).
 ## Screenshots
 
 ![2025-01-30_02-33-03](https://github.com/user-attachments/assets/12d46e4f-bbec-4c90-865f-3cbb36866bc9)
-![2025-01-30_02-36-54](https://github.com/user-attachments/assets/1fa2dc55-41f8-46d6-bfac-afef2e83c32c)
+![2026-03-18_21-45-02](https://github.com/user-attachments/assets/e9f376ce-e83d-4b96-b85d-ff02c9779d9a)
 ![2026-01-30_22-07-01](https://github.com/user-attachments/assets/9cf68018-11f6-4ae9-9396-6df654758d8a)
 ![2025-01-30_02-37-16](https://github.com/user-attachments/assets/d9702b1a-2816-48a5-a9f0-00b7999447dd)
 
