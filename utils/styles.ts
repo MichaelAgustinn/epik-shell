@@ -149,8 +149,8 @@ function defineVar(opt: Opt, type = "string", slice = 2, arrayLength = 4) {
 }
 
 async function initScss(mode: ThemeMode) {
-	const targetDir = `${SRC}/styles/variables.scss`
-	const scss = `${SRC}/styles/styles.scss`
+	const targetDir = `${GLib.get_tmp_dir()}/_variables.scss`
+	const scss = `${GLib.get_tmp_dir()}/styles.scss`
 	const css = `${GLib.get_tmp_dir()}/styles.css`
 	const colors = theme[mode]
 
@@ -200,6 +200,12 @@ async function initScss(mode: ThemeMode) {
 	]
 
 	await writeFileAsync(targetDir, scssVar.join("\n")).catch(console.error)
+	await writeFileAsync(`${SRC}/styles/variables.scss`, `@forward '${targetDir}'`);
+
+	const fd = await bash(`fd ".scss" ${SRC}`)
+	const files = fd.split(/\s+/)
+	const imports = [...files].map(f => f.includes('variables') ? `` : `@use '${f}';`)
+	await writeFileAsync(scss, imports.join('\n'))
 	await bash(`sass ${scss} ${css}`)
 	app.apply_css(css, true)
 }
@@ -236,7 +242,7 @@ export async function initHyprlandTheme(mode: ThemeMode) {
 	}
 
 	const config = [
-		generateConfig("general:border_size", window.border_width.peek() - 1),
+		generateConfig("general:border_size", window.border_width.peek() > 1 ? window.border_width.peek() - 1 : 1),
 		generateConfig(
 			"general:gaps_out",
 			Object.keys(margin)
