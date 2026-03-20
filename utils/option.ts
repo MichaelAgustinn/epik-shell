@@ -1,8 +1,7 @@
 import { Accessor, createState } from "ags"
 import { cacheDir, ensureDirectory, ensureFile } from "."
 import GLib from "gi://GLib?version=2.0"
-import { monitorFile, readFile, readFileAsync, writeFile } from "ags/file"
-import Gio from "gi://Gio?version=2.0"
+import { readFile, readFileAsync, writeFile } from "ags/file"
 
 ensureFile(`${cacheDir}/options.json`)
 
@@ -21,26 +20,26 @@ function getNestedValue(obj: Record<string, any>, keyPath: string) {
 	return current
 }
 
-function setNestedValue<T>(
-	obj: Record<string, any>,
-	keyPath: string,
-	value: T,
-) {
-	const keys = keyPath.split(".")
-	let current = obj
-
-	for (let i = 0; i < keys.length - 1; i++) {
-		const key = keys[i]
-
-		if (!current[key]) {
-			current[key] = {}
-		}
-
-		current = current[key]
-	}
-
-	current[keys[keys.length - 1]] = value
-}
+// function setNestedValue<T>(
+// 	obj: Record<string, any>,
+// 	keyPath: string,
+// 	value: T,
+// ) {
+// 	const keys = keyPath.split(".")
+// 	let current = obj
+//
+// 	for (let i = 0; i < keys.length - 1; i++) {
+// 		const key = keys[i]
+//
+// 		if (!current[key]) {
+// 			current[key] = {}
+// 		}
+//
+// 		current = current[key]
+// 	}
+//
+// 	current[keys[keys.length - 1]] = value
+// }
 
 type Callback = () => void
 type DisposeFn = () => void
@@ -182,7 +181,6 @@ export function mkOptions<T extends object>(configFile: string, object: T) {
 	}
 
 	ensureDirectory(configFile.split("/").slice(0, -1).join("/"))
-	const defaultConfig = transformObject(object, true)
 	const [configVar, configVarSet] = createState(transformObject(object))
 
 	if (GLib.file_test(configFile, GLib.FileTest.EXISTS)) {
@@ -195,47 +193,48 @@ export function mkOptions<T extends object>(configFile: string, object: T) {
 		configVarSet(deepMerge(configVar.peek(), configData))
 	}
 
-	function updateConfig(
-		oldConfig: Record<string, any>,
-		newConfig: Record<string, any>,
-		path = "",
-	) {
-		for (const key in newConfig) {
-			const fullPath = path ? `${path}.${key}` : key
-			if (
-				typeof newConfig[key] === "object" &&
-				!Array.isArray(newConfig[key])
-			) {
-				updateConfig(oldConfig[key], newConfig[key], fullPath)
-			} else if (
-				JSON.stringify(oldConfig[key]) != JSON.stringify(newConfig[key])
-			) {
-				const conf = getOptions(object).find((c) => c.id == fullPath)
-				if (conf?.cached) {
-					return
-				}
-				print(`${fullPath} updated`)
-				if (conf) {
-					const newC = configVar.peek()
-					setNestedValue(newC, fullPath, newConfig[key])
-					configVarSet(newC)
-					conf.set(newConfig[key])
-				}
-			}
-		}
-	}
+	// function updateConfig(
+	// 	oldConfig: Record<string, any>,
+	// 	newConfig: Record<string, any>,
+	// 	path = "",
+	// ) {
+	// 	for (const key in newConfig) {
+	// 		const fullPath = path ? `${path}.${key}` : key
+	// 		if (
+	// 			typeof newConfig[key] === "object" &&
+	// 			!Array.isArray(newConfig[key])
+	// 		) {
+	// 			updateConfig(oldConfig[key], newConfig[key], fullPath)
+	// 		} else if (
+	// 			JSON.stringify(oldConfig[key]) != JSON.stringify(newConfig[key])
+	// 		) {
+	// 			const conf = getOptions(object).find((c) => c.id == fullPath)
+	// 			if (conf?.cached) {
+	// 				return
+	// 			}
+	// 			print(`${fullPath} updated`)
+	// 			if (conf) {
+	// 				const newC = configVar.peek()
+	// 				setNestedValue(newC, fullPath, newConfig[key])
+	// 				configVarSet(newC)
+	// 				conf.set(newConfig[key])
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	monitorFile(configFile, (_, event) => {
-		if (event == Gio.FileMonitorEvent.CHANGES_DONE_HINT) {
-			let cache: object
-			try {
-				cache = JSON.parse(readFile(configFile) || "{}")
-			} catch {
-				cache = {}
-			}
-			updateConfig(configVar.peek(), deepMerge(defaultConfig, cache))
-		}
-	})
+	// const defaultConfig = transformObject(object, true)
+	// monitorFile(configFile, (_, event) => {
+	// 	if (event == Gio.FileMonitorEvent.CHANGES_DONE_HINT) {
+	// 		let cache: object
+	// 		try {
+	// 			cache = JSON.parse(readFile(configFile) || "{}")
+	// 		} catch {
+	// 			cache = {}
+	// 		}
+	// 		updateConfig(configVar.peek(), deepMerge(defaultConfig, cache))
+	// 	}
+	// })
 
 	return Object.assign(object, {
 		configFile,
