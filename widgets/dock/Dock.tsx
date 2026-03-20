@@ -98,12 +98,12 @@ export function DockHover({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
 
 					}}
 					cssClasses={["dock-padding"]}
-					heightRequest={heightVar()}
+					heightRequest={heightVar}
 				>
 					{/* I dont know why window/box not visible when there's no child/background-color */}
 					{/* So I give this child and set it to transparent so I can detect hover */}
 					<label
-						css={`color: transparent;`}
+						css={`color: transparent; font-size: 0.01px`}
 						label={"hehe"}
 					/>
 				</box>
@@ -148,6 +148,9 @@ export function Dock({ gdkmonitor, ...props }: DockProps) {
 				const size = getSize(self)
 				setWidthVar(size!.width)
 				setHeightVar(getHoverHeight())
+				hyprland.connect("config-reloaded", () => {
+					setHeightVar(getHoverHeight())
+				})
 			}}
 			application={app}
 			{...props}
