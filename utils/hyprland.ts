@@ -1,7 +1,6 @@
 import AstalHyprland from "gi://AstalHyprland?version=0.1"
 import options from "../options"
 import app from "ags/gtk4/app"
-import { initHyprlandTheme, ThemeMode } from "./styles"
 
 const hyprland = AstalHyprland.get_default()
 const { bar } = options
@@ -81,6 +80,5 @@ export default function initHyprland() {
   hyprland.connect("config-reloaded", () => {
     windowAnimation()
     windowBlur()
-    initHyprlandTheme(options.theme.mode.peek() as ThemeMode)
   })
 }

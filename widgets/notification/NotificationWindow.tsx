@@ -71,7 +71,7 @@ export default function NotificationWindow() {
   const layout = createComputed(() => {
     return `${bar.position()}_center`
   })
-  const width = options.theme.window.padding((val) => (val + 15) * 2 + 400)
+  const width = options.window.padding((val) => (val + 15) * 2 + 400)
   return (
     <With value={layout}>
       {(l) => (

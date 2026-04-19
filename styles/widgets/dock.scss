@@ -12,7 +12,7 @@
 
   .media-player {
     min-width: 180px;
-    background-color: color.adjust($fg, $alpha: -0.75);
+    background-color: color.adjust($foreground, $alpha: -0.75);
     padding: 0.35rem;
     margin-left: 0.5rem;
     border-radius: $window-border-radius;

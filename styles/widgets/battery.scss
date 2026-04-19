@@ -9,14 +9,14 @@
     levelbar trough block {
       min-height: 45px;
       border-radius: $window-border-radius;
-      background-color: color.adjust($fg, $alpha: -0.65);
+      background-color: color.adjust($foreground, $alpha: -0.65);
       &.filled {
-        background-color: $fg;
+        background-color: $foreground;
       }
     }
 
     label {
-      color: $bg;
+      color: $background;
       font-size: 1.2rem;
       margin-left: 0.7rem;
     }
@@ -25,17 +25,17 @@
   .power-profiles {
     button {
       padding: 0.2rem;
-      background-color: color.adjust($fg, $alpha: -0.9);
-      color: $fg;
+      background-color: color.adjust($foreground, $alpha: -0.9);
+      color: $foreground;
       border-radius: $window-border-radius;
 
       &:hover {
-        background-color: color.adjust($fg, $alpha: -0.65);
+        background-color: color.adjust($foreground, $alpha: -0.65);
       }
 
       &.active {
-        background-color: $fg;
-        color: $bg;
+        background-color: $foreground;
+        color: $background;
       }
     }
   }

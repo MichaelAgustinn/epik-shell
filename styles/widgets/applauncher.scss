@@ -32,7 +32,7 @@
   }
 
   .entry-overlay {
-    box-shadow: 0 0 0 $window-border-width $fg;
+    box-shadow: 0 0 0 $window-border-width $foreground;
     border-radius: $window-border-radius;
     scrolledwindow viewport picture {
       border-radius: $window-border-radius;
@@ -54,7 +54,7 @@
   .app-button {
     -gtk-icon-size: 2rem;
     padding: 0.4rem 0.8rem;
-    background-color: color.adjust($fg, $alpha: -0.9);
+    background-color: color.adjust($foreground, $alpha: -0.9);
     image {
       margin-right: 6px;
     }
@@ -73,7 +73,7 @@
       outline-color: $accent;
     }
     &:hover {
-      background-color: color.adjust($fg, $alpha: -0.75);
+      background-color: color.adjust($foreground, $alpha: -0.75);
     }
     .description {
       font-size: 0.85rem;

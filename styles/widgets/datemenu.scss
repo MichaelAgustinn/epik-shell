@@ -15,7 +15,7 @@
   calendar {
     background-color: transparent;
     border: unset;
-    color: $fg;
+    color: $foreground;
 
     header {
       padding-bottom: 0.3rem;
@@ -30,7 +30,7 @@
 
     .day-number {
       &:selected {
-        color: $bg;
+        color: $background;
         background-color: $accent;
       }
     }

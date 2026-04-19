@@ -37,6 +37,7 @@ export default function QSPanelButton() {
   const isBtPowered = createBinding(bluetooth, "isPowered")
   const isBatteryPresent = createBinding(battery, "isPresent")
   const batteryIcon = createBinding(battery, "batteryIconName")
+  const batteryPercentage = createBinding(battery, "percentage")
   const volumeIcon = createBinding(speaker, "volumeIcon")
   const activePowerProfile = createBinding(powerprofile, "activeProfile")
   const isMute = createBinding(wp.defaultMicrophone, "mute")
@@ -58,7 +59,21 @@ export default function QSPanelButton() {
           </With>
         </box>
         <box visible={isBatteryPresent()}>
-          <With value={batteryIcon}>{(icon) => <image iconName={icon} />}</With>
+          <box>
+            <With value={batteryIcon}>
+              {(icon) => <image iconName={icon} />}
+            </With>
+          </box>
+          <box>
+            <With value={batteryPercentage}>
+              {(percentage) => (
+                <label
+                  marginStart={1}
+                  label={`${Math.floor(percentage * 100)}%`}
+                />
+              )}
+            </With>
+          </box>
         </box>
         <box>
           <With value={volumeIcon}>{(icon) => <image iconName={icon} />}</With>

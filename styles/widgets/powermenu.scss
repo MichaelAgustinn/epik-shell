@@ -14,13 +14,13 @@
 
   .buttons {
     button {
-      background-color: color.adjust($fg, $alpha: -0.9);
+      background-color: color.adjust($foreground, $alpha: -0.9);
       padding: 0.2rem;
       &:focus {
-        outline-color: $fg;
+        outline-color: $foreground;
       }
       &:hover {
-        background-color: color.adjust($fg, $alpha: -0.65);
+        background-color: color.adjust($foreground, $alpha: -0.65);
       }
     }
 
@@ -45,12 +45,12 @@
   }
 
   .system-button {
-    background-color: color.adjust($fg, $alpha: -0.9);
+    background-color: color.adjust($foreground, $alpha: -0.9);
     padding: 0.7rem;
     border-radius: $window-border-radius;
 
     &:hover {
-      background-color: color.adjust($fg, $alpha: -0.65);
+      background-color: color.adjust($foreground, $alpha: -0.65);
     }
   }
 }

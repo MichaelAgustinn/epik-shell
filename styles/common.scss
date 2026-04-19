@@ -36,7 +36,7 @@ menubutton {
     border-radius: calc(list.nth($window-border-radius, 1) / 2);
 
     &:hover {
-      background-color: color.adjust($fg, $alpha: -0.85);
+      background-color: color.adjust($foreground, $alpha: -0.85);
     }
   }
 }
@@ -55,7 +55,7 @@ button {
   }
 
   &:hover {
-    background-color: color.adjust($fg, $alpha: -0.85);
+    background-color: color.adjust($foreground, $alpha: -0.85);
   }
 }
 
@@ -118,7 +118,7 @@ $shadow-v: list.nth($bar-button-shadow-offset, 2);
   &:hover {
     background-color: if(
       sass($bar-opacity < 1): $bar-button-bg-color;
-      else: color.adjust($bar-button-fg-color, $alpha: -0.9)
+        else: color.adjust($bar-button-fg-color, $alpha: -0.9)
     );
   }
 
@@ -129,8 +129,11 @@ $shadow-v: list.nth($bar-button-shadow-offset, 2);
 }
 
 .window-content {
-  background-color: color.adjust($bg, $alpha: calc($window-opacity - 1));
-  color: $fg;
+  background-color: color.adjust(
+    $background,
+    $alpha: calc($window-opacity - 1)
+  );
+  color: $foreground;
   margin: $window-margin;
   box-shadow:
     0 0 0 $window-border-width $window-border-color,

@@ -17,20 +17,20 @@
 
     .dnd {
       margin-right: 0.5rem;
-      background-color: color.adjust($fg, $alpha: -0.9);
+      background-color: color.adjust($foreground, $alpha: -0.9);
       padding: 0 0.6rem;
 
       &.active {
-        color: $bg;
-        background-color: $fg;
+        color: $background;
+        background-color: $foreground;
 
         &:hover {
-          background-color: color.adjust($fg, $alpha: -0.2);
+          background-color: color.adjust($foreground, $alpha: -0.2);
         }
       }
 
       &:hover {
-        background-color: color.adjust($fg, $alpha: -0.7);
+        background-color: color.adjust($foreground, $alpha: -0.7);
       }
       label {
         font-size: 0.95rem;
@@ -57,7 +57,7 @@
   .notification-container {
     min-width: 1px;
     margin: $window-border-width;
-    background-color: color.adjust($fg, $alpha: -0.9);
+    background-color: color.adjust($foreground, $alpha: -0.9);
     box-shadow: none;
   }
 }
@@ -76,7 +76,7 @@
 
     button {
       padding: 0 0.3rem;
-      background-color: color.adjust($fg, $alpha: -0.9);
+      background-color: color.adjust($foreground, $alpha: -0.9);
       border-radius: calc(list.nth($window-border-radius, 1) / 2);
     }
   }
@@ -108,7 +108,7 @@
     margin-top: 0.5rem;
     button {
       padding: 0.1rem 0;
-      background-color: color.adjust($fg, $alpha: -0.9);
+      background-color: color.adjust($foreground, $alpha: -0.9);
       border-radius: calc(list.nth($window-border-radius, 1) / 2);
     }
   }

@@ -19,11 +19,11 @@
     }
 
     button {
-      background-color: color.adjust($fg, $alpha: -0.9);
+      background-color: color.adjust($foreground, $alpha: -0.9);
       padding: 0 0.6rem;
 
       &:hover {
-        background-color: color.adjust($fg, $alpha: -0.65);
+        background-color: color.adjust($foreground, $alpha: -0.65);
       }
     }
   }

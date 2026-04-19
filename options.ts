@@ -4,108 +4,97 @@ import GLib from "gi://GLib?version=2.0"
 import { execAsync } from "ags/process"
 
 const options = mkOptions(
-	`${GLib.get_user_config_dir()}/epik-shell/config.json`,
-	{
-		wallpaper: {
-			folder: opt(GLib.get_home_dir(), { cached: true }),
-			current: opt(
-				await execAsync("awww query")
-					.then((out) => out.split("image:")[1].trim())
-					.catch(() => ""),
-				{ cached: true },
-			),
-		},
-		dock: {
-			position: opt("bottom"),
-			pinned: opt(["firefox", "Alacritty", "org.gnome.Nautilus", "localsend"]),
-		},
-		bar: {
-			position: opt("top"),
-			separator: opt(true),
-		},
-		desktop_clock: {
-			position: opt<
-				| "top_left"
-				| "top"
-				| "top_right"
-				| "left"
-				| "center"
-				| "right"
-				| "bottom_left"
-				| "bottom"
-				| "bottom_right"
-			>("top_left"),
-		},
-		theme: {
-			mode: opt(
-				gsettings.get_string("color-scheme") == "prefer-light"
-					? "light"
-					: "dark",
-				{ cached: true },
-			),
-			bar: {
-				bg_color: opt("$bg"),
-				opacity: opt(1),
-				border_radius: opt(6),
-				margin: opt(10),
-				padding: opt(3),
-				border_width: opt(2),
-				border_color: opt("$fg"),
-				shadow: {
-					offset: opt([6, 6]),
-					blur: opt(0),
-					spread: opt(0),
-					color: opt("$fg"),
-					opacity: opt(1),
-				},
-				button: {
-					bg_color: opt("$bg"),
-					fg_color: opt("$fg"),
-					opacity: opt(1),
-					border_radius: opt(8),
-					border_width: opt(0),
-					border_color: opt("$fg"),
-					padding: opt([0, 3]),
-					shadow: {
-						offset: opt([0, 0]),
-						blur: opt(0),
-						spread: opt(0),
-						color: opt("$fg"),
-						opacity: opt(1),
-					},
-				},
-			},
-			window: {
-				opacity: opt(1),
-				border_radius: opt(6),
-				margin: opt(10),
-				padding: opt(10),
-				dock_padding: opt(4),
-				desktop_clock_padding: opt(4),
-				border_width: opt(2),
-				border_color: opt("$fg"),
-				shadow: {
-					offset: opt([6, 6]),
-					blur: opt(0),
-					spread: opt(0),
-					color: opt("$fg"),
-					opacity: opt(1),
-				},
-			},
-			light: {
-				bg: opt("#fbf1c7"),
-				fg: opt("#3c3836"),
-				accent: opt("#3c3836"),
-				red: opt("#cc241d"),
-			},
-			dark: {
-				bg: opt("#282828"),
-				fg: opt("#ebdbb2"),
-				accent: opt("#ebdbb2"),
-				red: opt("#cc241d"),
-			},
-		},
-	},
+  `${GLib.get_user_config_dir()}/epik-shell/config.json`,
+  {
+    dock: {
+      position: opt("bottom"),
+      pinned: opt(["firefox", "Alacritty", "org.gnome.Nautilus", "localsend"]),
+    },
+    bar: {
+      position: opt("top"),
+      separator: opt(true),
+      bg_color: opt("$background"),
+      opacity: opt(1),
+      border_radius: opt(6),
+      margin: opt(10),
+      padding: opt(3),
+      border_width: opt(2),
+      border_color: opt("$foreground"),
+      shadow: {
+        offset: opt([6, 6]),
+        blur: opt(0),
+        spread: opt(0),
+        color: opt("$foreground"),
+        opacity: opt(1),
+      },
+      button: {
+        bg_color: opt("$background"),
+        fg_color: opt("$foreground"),
+        opacity: opt(1),
+        border_radius: opt(8),
+        border_width: opt(0),
+        border_color: opt("$foreground"),
+        padding: opt([0, 3]),
+        shadow: {
+          offset: opt([0, 0]),
+          blur: opt(0),
+          spread: opt(0),
+          color: opt("$foreground"),
+          opacity: opt(1),
+        },
+      },
+    },
+    desktop_clock: {
+      position: opt<
+        | "top_left"
+        | "top"
+        | "top_right"
+        | "left"
+        | "center"
+        | "right"
+        | "bottom_left"
+        | "bottom"
+        | "bottom_right"
+      >("top_left"),
+    },
+    window: {
+      opacity: opt(1),
+      border_radius: opt(6),
+      margin: opt(10),
+      padding: opt(10),
+      dock_padding: opt(4),
+      desktop_clock_padding: opt(4),
+      border_width: opt(2),
+      border_color: opt("$foreground"),
+      shadow: {
+        offset: opt([6, 6]),
+        blur: opt(0),
+        spread: opt(0),
+        color: opt("$foreground"),
+        opacity: opt(1),
+      },
+    },
+    colorscheme: opt("gruvbox", { cached: true }),
+    alacritty: {
+      dark: opt(
+        `${GLib.get_user_config_dir()}/alacritty/tokyonight_night.toml`,
+      ),
+      light: opt(`${GLib.get_user_config_dir()}/alacritty/tokyonight_day.toml`),
+    },
+    theme: opt<"light" | "dark">(
+      gsettings.get_string("color-scheme") == "prefer-light" ? "light" : "dark",
+      { cached: true },
+    ),
+    wallpaper: {
+      folder: opt(GLib.get_home_dir(), { cached: true }),
+      current: opt(
+        await execAsync("awww query")
+          .then((out) => out.split("image:")[1].trim())
+          .catch(() => ""),
+        { cached: true },
+      ),
+    },
+  },
 )
 
 export default options
