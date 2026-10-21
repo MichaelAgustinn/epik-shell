@@ -1,0 +1,43 @@
+@use "../variables" as *;
+@use "sass:math";
+@use "sass:color";
+
+.sysmon-container {
+  margin: $window-margin;
+  color: $foreground;
+
+  .unit {
+    padding: $window-desktop-clock-padding;
+    > * {
+      margin: 0 0.7rem;
+    }
+  }
+
+  > box {
+    margin-right: 12px;
+    background-color: color.adjust(
+      $background,
+      $alpha: calc($window-opacity - 1)
+    );
+    border-radius: $window-border-radius;
+    box-shadow:
+      0 0 0 $window-border-width $window-border-color,
+      $window-shadow-offset $window-shadow-blur $window-shadow-spread
+        color.adjust(
+          $window-shadow-color,
+          $alpha: calc($window-shadow-opacity - 1)
+        );
+
+    .box-label {
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+  }
+
+  .unit-value {
+    font-size: 2rem;
+    color: $foreground;
+    font-family: "JetBrainsMono";
+    font-weight: 700;
+  }
+}

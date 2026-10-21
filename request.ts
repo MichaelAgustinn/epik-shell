@@ -1,4 +1,10 @@
 import ScreenRecord from "./utils/screenrecord"
+import {
+  switcherNext,
+  switcherPrev,
+  switcherConfirm,
+  switcherCancel,
+} from "./widgets/switcher/Switcher"
 
 export default function requestHandler(
   request: string[],
@@ -17,6 +23,22 @@ export default function requestHandler(
     case "screenshot-select":
       res("ok")
       screenRecord.screenshot().catch(console.error)
+      break
+    case "switcher next":
+      res("ok")
+      switcherNext()
+      break
+    case "switcher prev":
+      res("ok")
+      switcherPrev()
+      break
+    case "switcher confirm":
+      res("ok")
+      switcherConfirm()
+      break
+    case "switcher cancel":
+      res("ok")
+      switcherCancel()
       break
     default:
       res("not ok")

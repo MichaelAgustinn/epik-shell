@@ -1,0 +1,31 @@
+@use "../variables.scss" as *;
+
+.osd-box {
+  background-color: $background;
+  color: $foreground;
+  border-radius: 14px;
+  padding: 12px 18px;
+  margin-bottom: 90px;
+  min-width: 280px;
+  box-shadow: 0 0 0 2px $accent;
+}
+
+.osd-title {
+  font-size: 12px;
+}
+
+.osd-percent {
+  font-weight: bold;
+}
+
+.osd-bar trough {
+  min-height: 6px;
+  border-radius: 99px;
+  background-color: rgba($foreground, 0.15);
+}
+
+.osd-bar progress {
+  min-height: 6px;
+  border-radius: 99px;
+  background-color: $accent;
+}
