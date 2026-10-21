@@ -159,9 +159,7 @@ function WifiArrowButton() {
   const wifi = AstalNetwork.get_default().wifi
 
   const getSsid = () =>
-    wifi.state == AstalNetwork.DeviceState.ACTIVATED
-      ? wifi.ssid
-      : AstalNetwork.device_state_to_string()
+    wifi.state == AstalNetwork.DeviceState.ACTIVATED ? wifi.ssid : "No Network"
 
   const label = createConnection(
     getSsid(),
