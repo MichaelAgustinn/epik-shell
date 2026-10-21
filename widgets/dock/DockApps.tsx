@@ -12,6 +12,14 @@ import Adw from "gi://Adw?version=1"
 
 const hyprland = AstalHyprland.get_default()
 const application = new AstalApps.Apps()
+const focusClient = (client: AstalHyprland.Client) => {
+  const addr = client.address.startsWith("0x")
+    ? client.address
+    : `0x${client.address}`
+  return hyprland.message(
+    `dispatch hl.dsp.focus({ window = "address:${addr}" })`,
+  )
+}
 const iconTheme = new Gtk.IconTheme({ themeName: gtk4app.iconTheme })
 
 type AppButtonProps = JSX.IntrinsicElements["button"] & {
@@ -111,7 +119,7 @@ function AppsList() {
               onClicked={() => {
                 for (const client of hyprland.get_clients()) {
                   if (client.class.toLowerCase().includes(term.toLowerCase())) {
-                    return client.focus()
+                    return focusClient(client)
                   }
                 }
                 app!.launch()
@@ -135,9 +143,7 @@ function AppsList() {
             return (
               <AppButton
                 app={app}
-                onClicked={() => {
-                  client.focus()
-                }}
+                onClicked={() => focusClient(client)}
                 term={client.class}
                 client={client}
               />

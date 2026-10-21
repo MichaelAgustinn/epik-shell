@@ -1,0 +1,23 @@
+@use "../variables.scss" as *;
+
+.switcher-box {
+  background-color: $bg;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 0 0 2px $accent;
+}
+
+.switcher-item {
+  padding: 10px;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.switcher-item.selected {
+  background-color: $accent;
+}
+
+.switcher-title {
+  color: $fg;
+}

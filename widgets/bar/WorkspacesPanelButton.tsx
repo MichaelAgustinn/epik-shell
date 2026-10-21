@@ -50,7 +50,9 @@ function WorkspaceButton({ ws, ...props }: WsButtonProps) {
       class="workspace-button"
       valign={Gtk.Align.CENTER}
       halign={Gtk.Align.CENTER}
-      onClicked={() => ws.focus()}
+      onClicked={() =>
+        hyprland.message(`dispatch hl.dsp.focus({ workspace = ${ws.id} })`)
+      }
       {...props}
     />
   )
