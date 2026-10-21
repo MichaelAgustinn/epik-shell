@@ -10,13 +10,19 @@ import QSWindow from "./widgets/quicksettings/QSWindow"
 import { Dock, DockHover } from "./widgets/dock/Dock"
 import PowerMenu from "./widgets/powermenu/PowerMenu"
 import VerificationWindow from "./widgets/powermenu/VerificationWindow"
+import Switcher from "./widgets/switcher/Switcher"
+import Osd from "./widgets/Osd"
+import SysMonitor from "./widgets/SysMonitor"
 
 export default function windows() {
   const monitors = createBinding(app, "monitors")
 
   Applauncher()
+  Switcher()
+  Osd()
   DateMenu()
   DesktopClock()
+  SysMonitor()
   NotificationWindow()
   PowerMenu()
   VerificationWindow()

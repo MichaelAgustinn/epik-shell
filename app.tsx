@@ -7,12 +7,12 @@ import requestHandler from "./request"
 await initStyles()
 
 app.start({
-	icons: `${SRC}/assets/icons`,
-	requestHandler(req, res) {
-		requestHandler(req, res)
-	},
-	main() {
-		windows()
-		initHyprland()
-	},
+  icons: `${SRC}/assets/icons`,
+  requestHandler(req, res) {
+    requestHandler(req, res)
+  },
+  main() {
+    windows()
+    initHyprland()
+  },
 })
