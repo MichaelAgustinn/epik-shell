@@ -158,6 +158,9 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
     (a) => a || "Unknown Artist",
   )
   const coverArt = createBinding(player, "coverArt")
+  const isCoverArtAvail = createComputed(() =>
+    Gio.file_new_for_path(coverArt()).query_exists(null),
+  )
 
   const playIcon = createBinding(player, "playbackStatus").as((s) =>
     s === AstalMpris.PlaybackStatus.PLAYING
@@ -171,11 +174,24 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
     <overlay>
       <box cssClasses={["media-player"]} hexpand spacing={4}>
         <Adw.Clamp maximumSize={40}>
-          <Gtk.Picture
-            file={coverArt((path) => Gio.file_new_for_path(path))}
-            contentFit={Gtk.ContentFit.COVER}
-            overflow={Gtk.Overflow.HIDDEN}
-            class="cover"
+          <With value={coverArt}>
+            {(value) => (
+              <Gtk.Picture
+                visible={isCoverArtAvail}
+                file={Gio.file_new_for_path(value)}
+                contentFit={Gtk.ContentFit.COVER}
+                overflow={Gtk.Overflow.HIDDEN}
+                class="cover"
+              />
+            )}
+          </With>
+
+          <image
+            visible={isCoverArtAvail((value) => !value)}
+            iconSize={Gtk.IconSize.LARGE}
+            marginStart={2}
+            marginEnd={2}
+            iconName={playerIcon}
           />
         </Adw.Clamp>
         <box orientation={Gtk.Orientation.VERTICAL} hexpand>
@@ -212,6 +228,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
         </box>
       </box>
       <image
+        visible={isCoverArtAvail}
         $type="overlay"
         valign={Gtk.Align.END}
         halign={Gtk.Align.START}
