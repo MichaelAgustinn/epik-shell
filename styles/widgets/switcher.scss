@@ -1,7 +1,7 @@
 @use "../variables.scss" as *;
 
 .switcher-box {
-  background-color: $bg;
+  background-color: $background;
   border-radius: 12px;
   padding: 14px;
   box-shadow: 0 0 0 2px $accent;
@@ -19,5 +19,5 @@
 }
 
 .switcher-title {
-  color: $fg;
+  color: $foreground;
 }
