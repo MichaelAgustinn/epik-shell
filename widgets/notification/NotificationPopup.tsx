@@ -16,12 +16,15 @@ export default function NotificationPopup({
   >([])
 
   const notifiedHandler = notifd.connect("notified", (_, id, replaced) => {
+    if (notifd.dontDisturb) return
+
     const notification = notifd.get_notification(id)
+    if (!notification) return
 
     if (replaced && notifications.peek().some((n) => n.id === id)) {
-      setNotifications((ns) => ns.map((n) => (n.id === id ? notification! : n)))
+      setNotifications((ns) => ns.map((n) => (n.id === id ? notification : n)))
     } else {
-      setNotifications((ns) => [notification!, ...ns])
+      setNotifications((ns) => [notification, ...ns])
     }
 
     timeout(5000, () => {
