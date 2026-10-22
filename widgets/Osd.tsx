@@ -5,6 +5,7 @@ import { calculateAnchor } from "./common/PopupWindow"
 import Brightness from "gi://AstalBrightness"
 import AstalWp from "gi://AstalWp?version=0.1"
 import { timeout } from "ags/time"
+import app from "ags/gtk4/app"
 
 const { osd } = options
 
@@ -31,6 +32,7 @@ export default function Osd() {
       name={"osd"}
       namespace={"osd"}
       anchor={osd.position((l) => calculateAnchor(l) ?? Astal.Layer.TOP)}
+      application={app}
       layer={Astal.Layer.OVERLAY}
       $={(win) => {
         brightness.screen.connect("notify", (obj) => {
