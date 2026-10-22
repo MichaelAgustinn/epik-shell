@@ -98,7 +98,7 @@ export default function Switcher() {
       }}
     >
       <box
-        cssClasses={["switcher-box"]}
+        cssClasses={["switcher-container", "window-content"]}
         orientation={Gtk.Orientation.VERTICAL}
         spacing={8}
       >

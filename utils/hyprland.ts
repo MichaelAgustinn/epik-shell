@@ -41,12 +41,21 @@ const windowsAnimation = () =>
 export function windowAnimation() {
   sendBatch(
     windowsAnimation().map(({ namespace, animation }) => {
-      const resolvedAnimation =
-        namespace === "dock"
-          ? `slide ${options.dock.position.peek()}`
-          : animation === "slide top"
-            ? `slide ${bar.position.peek()}`
-            : animation
+      let resolvedAnimation = animation
+
+      if (namespace === "dock") {
+        resolvedAnimation = `slide ${options.dock.position.peek()}`
+      } else if (namespace === "osd") {
+        if (options.osd.position.peek().includes("top")) {
+          resolvedAnimation = "slide top"
+        } else if (options.osd.position.peek().includes("bottom")) {
+          resolvedAnimation = "slide bottom"
+        } else {
+          resolvedAnimation = `slide ${options.osd.position.peek()}`
+        }
+      } else if (animation === "slide top") {
+        resolvedAnimation = `slide ${bar.position.peek()}`
+      }
 
       return `layerrule animation ${resolvedAnimation}, match:namespace ${namespace}`
     }),

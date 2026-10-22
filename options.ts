@@ -57,6 +57,20 @@ const options = mkOptions(
         | "bottom_right"
       >("top_left"),
     },
+    osd: {
+      position: opt<
+        | "top_left"
+        | "top"
+        | "top_right"
+        | "left"
+        | "center"
+        | "right"
+        | "bottom_left"
+        | "bottom"
+        | "bottom_right"
+      >("right"),
+      orientation: opt<"vertical" | "horizontal">("vertical"),
+    },
     window: {
       opacity: opt(1),
       border_radius: opt(6),
@@ -93,6 +107,19 @@ const options = mkOptions(
           .catch(() => ""),
         { cached: true },
       ),
+    },
+    system_monitor: {
+      position: opt<
+        | "top_left"
+        | "top"
+        | "top_right"
+        | "left"
+        | "center"
+        | "right"
+        | "bottom_left"
+        | "bottom"
+        | "bottom_right"
+      >("bottom_left"),
     },
   },
 )

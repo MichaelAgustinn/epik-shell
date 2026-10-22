@@ -1,10 +1,9 @@
-import { Accessor, createRoot, createState } from "ags"
+import { Accessor, createState } from "ags"
 import { Astal, Gtk } from "ags/gtk4"
-import app from "ags/gtk4/app"
+import { interval } from "ags/time"
 import GLib from "gi://GLib?version=2.0"
-
-const { TOP, LEFT, RIGHT, BOTTOM } = Astal.WindowAnchor
-const POSITION = BOTTOM | LEFT
+import options from "../options"
+import { calculateAnchor } from "./common/PopupWindow"
 
 const [cpu, setCpu] = createState(0)
 const [ram, setRam] = createState(0)
@@ -55,7 +54,7 @@ function readUptime() {
   const d = Math.floor(s / 86400)
   const h = Math.floor((s % 86400) / 3600)
   const m = Math.floor((s % 3600) / 60)
-  setUptime(d > 0 ? `${d}h ${h}j` : `${h}j ${m}m`)
+  setUptime(d > 0 ? `${d}d ${h}h` : `${h}h ${m}m`)
 }
 
 function tick() {
@@ -84,35 +83,29 @@ function UnitBox({
 }
 
 export default function SysMonitor() {
-  return createRoot(() => {
+  interval(2000, () => {
     tick()
-    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2000, () => {
-      tick()
-      return GLib.SOURCE_CONTINUE
-    })
-
-    return (
-      <window
-        $={(self) => {
-          self.set_default_size(1, 1)
-          self.can_target = false
-          self.focusable = false
-        }}
-        visible
-        layer={Astal.Layer.BOTTOM}
-        exclusivity={Astal.Exclusivity.IGNORE}
-        keymode={Astal.Keymode.NONE}
-        name={"sysmonitor"}
-        namespace={"sysmonitor"}
-        anchor={POSITION}
-        application={app}
-      >
-        <box cssClasses={["sysmon-container"]} spacing={6}>
-          <UnitBox label="CPU" value={cpu((v) => `${v}%`)} />
-          <UnitBox label={ramText} value={ram((v) => `${v}%`)} />
-          <UnitBox label="Aktif" value={uptime} />
-        </box>
-      </window>
-    )
   })
+
+  return (
+    <window
+      $={(self) => {
+        self.set_default_size(1, 1)
+        self.can_target = false
+        self.focusable = false
+      }}
+      visible
+      layer={Astal.Layer.BOTTOM}
+      keymode={Astal.Keymode.NONE}
+      name={"sysmonitor"}
+      namespace={"sysmonitor"}
+      anchor={options.system_monitor.position((p) => calculateAnchor(p))}
+    >
+      <box cssClasses={["sysmon-container"]} spacing={20}>
+        <UnitBox label="CPU" value={cpu((v) => `${v}%`)} />
+        <UnitBox label={ramText} value={ram((v) => `${v}%`)} />
+        <UnitBox label="Uptime" value={uptime} />
+      </box>
+    </window>
+  )
 }

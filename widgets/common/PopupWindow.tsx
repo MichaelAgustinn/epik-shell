@@ -23,12 +23,16 @@ export function Padding({
   )
 }
 
-function calculateAnchor(position: string) {
+export function calculateAnchor(position: string) {
   const { TOP, RIGHT, BOTTOM, LEFT } = Astal.WindowAnchor
 
   switch (position) {
     case "top":
       return TOP | LEFT | RIGHT
+    case "right":
+      return RIGHT
+    case "left":
+      return LEFT
     case "top_center":
       return TOP
     case "top_left":
@@ -43,10 +47,8 @@ function calculateAnchor(position: string) {
       return BOTTOM | LEFT
     case "bottom_right":
       return BOTTOM | RIGHT
-    case "full":
-      return TOP | BOTTOM | LEFT | RIGHT
     default:
-      return undefined
+      return TOP | BOTTOM | LEFT | RIGHT
   }
 }
 

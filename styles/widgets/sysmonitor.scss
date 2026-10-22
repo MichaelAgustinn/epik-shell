@@ -4,17 +4,9 @@
 
 .sysmon-container {
   margin: $window-margin;
-  color: $foreground;
-
-  .unit {
-    padding: $window-desktop-clock-padding;
-    > * {
-      margin: 0 0.7rem;
-    }
-  }
 
   > box {
-    margin-right: 12px;
+    padding: $window-padding;
     background-color: color.adjust(
       $background,
       $alpha: calc($window-opacity - 1)
@@ -33,11 +25,15 @@
       font-style: italic;
     }
   }
+  .box-label {
+    font-size: 0.9rem;
+    color: $foreground;
+    font-style: italic;
+  }
 
   .unit-value {
     font-size: 2rem;
     color: $foreground;
-    font-family: "JetBrainsMono";
     font-weight: 700;
   }
 }
