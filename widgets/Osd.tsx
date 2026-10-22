@@ -30,7 +30,7 @@ export default function Osd() {
     <window
       name={"osd"}
       namespace={"osd"}
-      anchor={osd.position((l) => calculateAnchor(l))}
+      anchor={osd.position((l) => calculateAnchor(l) ?? Astal.Layer.TOP)}
       layer={Astal.Layer.OVERLAY}
       $={(win) => {
         brightness.screen.connect("notify", (obj) => {

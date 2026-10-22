@@ -47,8 +47,10 @@ export function calculateAnchor(position: string) {
       return BOTTOM | LEFT
     case "bottom_right":
       return BOTTOM | RIGHT
-    default:
+    case "full":
       return TOP | BOTTOM | LEFT | RIGHT
+    default:
+      return undefined
   }
 }
 

@@ -99,7 +99,9 @@ export default function SysMonitor() {
       keymode={Astal.Keymode.NONE}
       name={"sysmonitor"}
       namespace={"sysmonitor"}
-      anchor={options.system_monitor.position((p) => calculateAnchor(p))}
+      anchor={options.system_monitor.position(
+        (p) => calculateAnchor(p) ?? Astal.Layer.TOP,
+      )}
     >
       <box cssClasses={["sysmon-container"]} spacing={20}>
         <UnitBox label="CPU" value={cpu((v) => `${v}%`)} />
