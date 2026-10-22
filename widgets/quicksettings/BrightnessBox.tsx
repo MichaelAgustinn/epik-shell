@@ -1,8 +1,8 @@
 import { Gtk } from "ags/gtk4"
-import Brightness from "../../utils/brightness"
+import AstalBrightness from "gi://AstalBrightness?version=0.1"
 
 export default function BrightnessBox() {
-  const brightness = Brightness.get_default()
+  const brightness = AstalBrightness.get_default()
 
   return (
     <box
@@ -16,10 +16,10 @@ export default function BrightnessBox() {
       />
       <slider
         onChangeValue={(self) => {
-          brightness.screen = self.value
+          brightness.screen.brightness = self.value
         }}
         min={0.1}
-        value={brightness.screen}
+        value={brightness.screen.brightness}
         hexpand
       />
     </box>
