@@ -1,5 +1,6 @@
 import { Gtk } from "ags/gtk4"
 import AstalBrightness from "gi://AstalBrightness?version=0.1"
+import { createBinding } from "gnim"
 
 export default function BrightnessBox() {
   const brightness = AstalBrightness.get_default()
@@ -19,7 +20,7 @@ export default function BrightnessBox() {
           brightness.screen.brightness = self.value
         }}
         min={0.1}
-        value={brightness.screen.brightness}
+        value={createBinding(brightness.screen, "brightness")}
         hexpand
       />
     </box>
