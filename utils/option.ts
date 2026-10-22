@@ -7,12 +7,24 @@ import AstalNotifd from "gi://AstalNotifd"
 
 ensureFile(`${cacheDir}/options.json`)
 
+function isPlainObject(value: unknown): value is Record<string, any> {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+}
+
+function isEqual(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) return true
+  if (typeof a === "object" && typeof b === "object" && a && b) {
+    return JSON.stringify(a) === JSON.stringify(b)
+  }
+  return false
+}
+
 function getNestedValue(obj: Record<string, any>, keyPath: string) {
   const keys = keyPath.split(".")
   let current = obj
 
-  for (let key of keys) {
-    if (current && current.hasOwnProperty(key)) {
+  for (const key of keys) {
+    if (current && Object.prototype.hasOwnProperty.call(current, key)) {
       current = current[key]
     } else {
       return undefined
@@ -69,14 +81,18 @@ export class Opt<T = unknown> extends Accessor<T> {
   set(newValue: T): void {
     const value: T =
       typeof newValue === "function" ? newValue(this.currentValue) : newValue
-    if (!Object.is(this.currentValue, value)) {
+
+    // isEqual also treats structurally equal arrays/objects as unchanged,
+    // so subscribers are not re-triggered on every config reload.
+    if (!isEqual(this.currentValue, value)) {
       this.currentValue = value
       Array.from(this.subscribers).forEach((cb) => cb())
     }
+
     if (this.cached) {
       readFileAsync(`${cacheDir}/options.json`)
         .then((content) => {
-          let cache
+          let cache: Record<string, any>
           try {
             cache = JSON.parse(content)
           } catch (error) {
@@ -121,7 +137,7 @@ function getOptions(object: Record<string, any>, path = ""): Opt[] {
       return obj
     }
 
-    if (typeof obj === "object") return getOptions(obj, id)
+    if (typeof obj === "object" && obj !== null) return getOptions(obj, id)
 
     return []
   })
@@ -140,7 +156,7 @@ function transformObject(obj: Record<string, any>, initial?: boolean) {
     }
   }
 
-  if (typeof obj !== "object") return
+  if (typeof obj !== "object" || obj === null) return
 
   const newObj: Record<string, any> = {}
 
@@ -165,7 +181,7 @@ function deepMerge(target: Record<string, any>, source: Record<string, any>) {
   const result: Record<string, any> = Array.isArray(target) ? [] : { ...target }
 
   for (const key in source) {
-    if (source.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
       if (Array.isArray(source[key])) {
         result[key] = [...source[key]]
       } else if (typeof source[key] === "object" && source[key] !== null) {
@@ -180,8 +196,10 @@ function deepMerge(target: Record<string, any>, source: Record<string, any>) {
 }
 
 export function mkOptions<T extends object>(configFile: string, object: T) {
-  for (const opt of getOptions(object)) {
-    opt.init(configFile)
+  const allOpts = getOptions(object)
+
+  for (const o of allOpts) {
+    o.init(configFile)
   }
 
   ensureDirectory(configFile.split("/").slice(0, -1).join("/"))
@@ -197,50 +215,46 @@ export function mkOptions<T extends object>(configFile: string, object: T) {
     configVarSet(deepMerge(configVar.peek(), configData))
   }
 
-  function updateConfig(
-    oldConfig: Record<string, any>,
-    newConfig: Record<string, any>,
-    path = "",
-  ) {
+  /**
+   * Applies `newConfig` (the config file already merged on top of the
+   * defaults) to the options.
+   *
+   * It compares against each option's *current* value rather than against
+   * a previous snapshot. That way:
+   *  - a key present in the file and already applied is left alone,
+   *  - a key removed from the file falls back to its default (the merged
+   *    config carries the default value), so no separate reset branch is
+   *    needed and nothing is reset by mistake.
+   */
+  function updateConfig(newConfig: Record<string, any>, path = "") {
     for (const key in newConfig) {
       const fullPath = path ? `${path}.${key}` : key
-      if (
-        typeof newConfig[key] === "object" &&
-        !Array.isArray(newConfig[key])
-      ) {
-        updateConfig(oldConfig[key], newConfig[key], fullPath)
-      } else if (
-        JSON.stringify(oldConfig[key]) != JSON.stringify(newConfig[key])
-      ) {
-        const conf = getOptions(object).find((c) => c.id == fullPath)
-        if (conf?.cached) {
-          return
-        }
-        print(`${fullPath} updated`)
-        if (conf) {
-          print(newConfig[key])
+      const value = newConfig[key]
+      const conf = allOpts.find((c) => c.id === fullPath)
+
+      if (conf) {
+        // cached options live in options.json, not in the config file
+        if (conf.cached) continue
+        if (value === undefined) continue
+
+        if (!isEqual(conf.currentValue, value)) {
+          print(`${fullPath} updated`)
           const newC = configVar.peek()
-          setNestedValue(newC, fullPath, newConfig[key])
+          setNestedValue(newC, fullPath, value)
           configVarSet(newC)
-          conf.set(newConfig[key])
+          conf.set(value)
         }
-      } else {
-        const conf = getOptions(object).find((c) => c.id == fullPath)
-        if (
-          conf &&
-          JSON.stringify(conf.currentValue) != JSON.stringify(conf.defaultValue)
-        ) {
-          print(`Back to default ${conf.id}`)
-          const newC = configVar.peek()
-          setNestedValue(newC, fullPath, conf.defaultValue)
-          configVarSet(newC)
-          conf.set(conf.defaultValue)
-        }
+        continue
+      }
+
+      // not an option itself, so it is a group of options: recurse
+      if (isPlainObject(value)) {
+        updateConfig(value, fullPath)
       }
     }
   }
 
-  const defaultConfig = transformObject(object, true)
+  const defaultConfig = transformObject(object, true) ?? {}
   let timeout: number | null = null
   let lastContent: string | null = null
 
@@ -269,7 +283,7 @@ export function mkOptions<T extends object>(configFile: string, object: T) {
 
       try {
         const parsed = JSON.parse(content || "{}")
-        updateConfig(configVar.peek(), deepMerge(defaultConfig, parsed))
+        updateConfig(deepMerge(defaultConfig, parsed))
       } catch {
         notifySend(
           new AstalNotifd.Notification({
@@ -288,8 +302,8 @@ export function mkOptions<T extends object>(configFile: string, object: T) {
   return Object.assign(object, {
     configFile,
     handler(deps: string[], callback: () => void) {
-      for (const opt of getOptions(object)) {
-        if (deps.some((i) => opt.id.startsWith(i))) opt.subscribe(callback)
+      for (const o of allOpts) {
+        if (deps.some((i) => o.id.startsWith(i))) o.subscribe(callback)
       }
     },
   })
